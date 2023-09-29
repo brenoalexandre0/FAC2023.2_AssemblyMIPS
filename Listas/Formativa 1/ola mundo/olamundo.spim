@@ -1,0 +1,15 @@
+.data
+# aloca string
+frase: .asciiz "Ola Mundo\n"
+
+.text
+main:
+# printa a string
+li $v0, 4 
+la $a0, frase 
+syscall
+
+exit:
+# termina a interpretação
+li $v0, 10
+syscall
