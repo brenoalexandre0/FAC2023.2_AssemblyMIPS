@@ -1,0 +1,41 @@
+.data
+
+.text
+main:
+# le d
+li $v0, 5
+syscall
+add $s0, $v0, $zero
+
+# le a
+li $v0, 5
+syscall
+add $s1, $v0, $zero
+
+# le n
+li $v0, 5
+syscall
+add $s2, $v0, $zero
+
+# n - 1
+addiu $t0, $s2, -1
+# (n - 1) * a
+mul $t1, $t0, $s1
+# diaria = $t2 = d + ((n - 1) * a)
+add $t2, $s0, $t1
+
+# 32 - n
+addi $t3, $zero, 32
+sub $t4, $t3, $s2
+# valorTotal = $s3 = (32 - n) * diaria
+mul $s3, $t4, $t2
+
+# printa
+add $a0, $s3, $zero
+li $v0, 1
+syscall
+
+exit:
+# termina a interpretação
+li $v0, 10
+syscall

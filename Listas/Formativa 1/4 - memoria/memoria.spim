@@ -1,0 +1,26 @@
+# le i
+li $v0, 5
+syscall
+add $t0, $v0, $zero
+
+# le j
+li $v0, 5
+syscall
+add $t1, $v0, $zero
+
+# le n
+li $v0, 5
+syscall
+add $t2, $v0, $zero
+
+# A[j]
+mul $t3, $t1, 4
+add $t4, $s0, $t3
+lw $t5, 0($t4)
+# A[j] + N
+add $t6, $t5, $t2
+# A[i]
+mul $t7, $t0, 4
+add $t8, $s0, $t7
+# A[i] = A[j] + N
+sw $t6, 0($t8)
