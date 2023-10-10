@@ -18,7 +18,7 @@ syscall
 add $s2, $v0, $zero
 
 # n - 1
-addiu $t0, $s2, -1
+addi $t0, $s2, -1
 # (n - 1) * a
 mul $t1, $t0, $s1
 # diaria = $t2 = d + ((n - 1) * a)
