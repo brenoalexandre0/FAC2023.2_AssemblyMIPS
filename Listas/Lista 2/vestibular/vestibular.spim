@@ -1,0 +1,74 @@
+# $s0 = N
+# $s1 = gabarito
+# $s2 = respostas
+# $s3 = acertos
+
+.data
+
+.text
+main:
+# Le N
+addi $v0, $zero, 5
+syscall
+addi $s0, $v0, 1
+
+# Aloca N bytes de espaco para o gabarito
+addi $v0, $zero, 9
+add $a0, $s0, $zero
+syscall
+add $s1, $v0, $zero
+# Le o gabarito
+addi $v0, $zero, 8
+add $a0, $s1, $zero
+syscall
+
+# Aloca N bytes de espaco para as respostas
+addi $v0, $zero, 9
+add $a0, $s0, $zero
+syscall
+add $s2, $v0, $zero
+# Le as respostas
+addi $v0, $zero, 8
+add $a0, $s2, $zero
+syscall
+
+
+# Acertos = 0
+xor $s3, $s3, $s3
+# N = N - 1 (para nao comparar o final de string)
+addi $s0, $s0, -1
+checaAcertos:
+# Checa condicao de iteracao do loop
+beq $s0, $zero, printa
+addi $s0, $s0, -1
+
+# Carrega posicao N de gabarito
+add $t0, $s1, $s0
+lbu $t1, 0($t0)
+# Carrega posicao N de respostas
+add $t0, $s2, $s0
+lbu $t2, 0($t0)
+
+# Compara o gabarito com as respostas
+beq $t1, $t2, acerto
+j checaAcertos
+
+acerto:
+addi $s3, $s3, 1
+j checaAcertos
+
+
+printa:
+# Printa os acertos
+addi $v0, $zero, 1
+add $a0, $s3, $zero
+syscall
+
+# Printa \n
+addi $a0, $zero, 10
+addi $v0, $zero, 11
+syscall
+
+# Saida
+addi $v0, $zero, 10
+syscall

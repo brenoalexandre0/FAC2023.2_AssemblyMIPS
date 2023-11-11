@@ -1,0 +1,53 @@
+.data
+
+.text
+main:
+#f = $s0, g = $s1, h = $s2, i = $s3, j = $s4
+
+#Le g
+addi $v0, $zero, 5
+syscall
+add $s1, $zero, $v0
+
+#Le h
+addi $v0, $zero, 5
+syscall
+add $s2, $zero, $v0
+
+#Le i
+addi $v0, $zero, 5
+syscall
+add $s3, $zero, $v0
+
+#Le j
+addi $v0, $zero, 5
+syscall
+add $s4, $zero, $v0
+
+#if (i == j)
+beq $s3, $s4, soma
+j subtrai
+
+#f = g + h
+soma:
+add $s0, $s1, $s2
+j printa
+
+#f = g - h
+subtrai:
+sub $s0, $s1, $s2
+
+printa:
+add $a0, $zero, $s0
+addi $v0, $zero, 1
+syscall
+
+#Printa \n
+addi $a0, $zero, 10
+addi $v0, $zero, 11
+syscall
+
+exit:
+# termina a interpretação
+addi $v0, $zero, 10
+syscall

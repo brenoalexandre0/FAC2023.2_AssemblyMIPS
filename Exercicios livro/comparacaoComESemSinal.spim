@@ -1,0 +1,36 @@
+.data
+
+.text
+main:
+# Adiciona -1 e 1 para $s0 e $s1
+addi $s0, $s0, -1
+addi $s1, $s1, 1
+
+# Checa se $s0 é menor $s1
+slt $t0, $s0, $s1
+sltu $t1, $s0, $s1
+
+# Printa $t0
+add $a0, $t0, $zero
+addi $v0, $zero, 1
+syscall
+
+# Printa \n
+addi $a0, $zero, 10
+addi $v0, $zero, 11
+syscall
+
+# Printa $t1
+add $a0, $t1, $zero
+addi $v0, $zero, 1
+syscall
+
+# Printa \n
+addi $a0, $zero, 10
+addi $v0, $zero, 11
+syscall
+
+exit:
+# termina a interpretação
+addi $v0, $zero, 10
+syscall

@@ -1,0 +1,55 @@
+.data
+aeb: .space 4
+
+.text
+main:
+# Le N
+addiu $v0, $zero, 5
+syscall
+add $s0, $zero, $v0
+
+# Contador = 0
+xor $s3, $s3, $s3
+
+loop:
+# Condicional do loop
+beq $s3, $s0, fim
+# Incrementa o contador
+addi $s3, $s3, 1
+
+# Le a e b
+addi $v0, $zero, 8
+la $a0, aeb
+syscall
+add $s4, $a0, $zero
+
+# Carrega o primeiro caractere de $s4
+lbu $s1, 0($s4)
+# Carrega o terceiro caractere de $s4
+lbu $s2, 2($s4)
+
+xorAB:
+# Verifica se falso = 1 e se verdadeiro = 2
+beq $s1, $s2, igual
+addi $t0, $zero, 2
+j printa
+
+igual:
+addi $t0, $zero, 1
+
+printa:
+add $a0, $t0, $zero
+addi $v0, $zero, 1
+syscall
+
+# Printa \n
+addi $a0, $zero, 10
+addi $v0, $zero, 11
+syscall
+
+j loop
+
+fim:
+# Saida
+addi $v0, $zero, 10
+syscall

@@ -1,0 +1,37 @@
+.data
+
+.text
+main:
+#Carrega 2 e nega
+addi $s0, 2
+nor $s0, $s0, $zero
+addi $s0, $s0, 1
+
+#Imprime -2
+addi $v0, $zero, 1
+add $a0, $s0, $zero
+syscall
+
+#Imprime \n
+addi $a0, $zero, 10
+addi $v0, $zero, 11
+syscall
+
+#Nega -2
+nor $s0, $s0, $zero
+addi $s0, $s0, 1
+
+#Imprime 2
+addi $v0, $zero, 1
+add $a0, $s0, $zero
+syscall
+
+#Imprime \n
+addi $a0, $zero, 10
+addi $v0, $zero, 11
+syscall
+
+exit:
+# termina a interpretação
+addi $v0, $zero, 10
+syscall

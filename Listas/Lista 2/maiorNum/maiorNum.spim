@@ -1,0 +1,45 @@
+.data
+
+.text
+main:
+# Le N
+addiu $v0, $zero, 5
+syscall
+add $s0, $v0, $zero
+
+# Maior num = -2147483648
+li $s1, -2147483648
+
+loop:
+# Condicao do loop
+beq $s0, $zero, fim
+addi $s0, $s0, -1
+
+# Leitura dos Ns
+addi $v0, $zero, 5
+syscall
+add $t0, $v0, $zero
+
+slt $t1, $s1, $t0
+bne $t1, $zero, trocaMaior
+j loop
+
+trocaMaior:
+add $s1, $t0, $zero
+
+j loop
+
+fim:
+# Printa o maior numero
+add $a0, $s1, $zero
+addi $v0, $zero, 1
+syscall
+
+# Printa \n
+addi $a0, $zero, 10
+addi $v0, $zero, 11
+syscall
+
+# Saida
+addi $v0, $zero, 10
+syscall

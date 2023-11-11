@@ -1,0 +1,53 @@
+.data
+
+.text
+main:
+# Le M
+addi $v0, $zero, 5
+add $s0, $v0, $zero
+syscall
+
+# Le Q
+addi $v0, $zero, 5
+add $s1, $v0, $zero
+syscall
+
+# Registrador pra guardar se o produto sera negativo = 0
+add $s2, $zero, $zero
+
+#Checa se M é negativo
+slt $t0, $s0, $zero
+bne $t0, $zero, complementoA2_1
+j checaQ
+
+complementoA2_1:
+nor $s0, $s0, $zero
+addi $s0, $s0, 1
+# Negativo ++
+addi $s2, $s2, 1
+
+#Checa se Q é negativo
+checaQ:
+slt $t0, $s1, $zero
+bne $t0, $zero, complementoA2_2
+j multiplica
+
+complementoA2_2:
+nor $s1, $s1, $zero
+addi $s1, $s1, 1
+# Negativo ++
+addi $s2, $s2, 1
+
+multiplica:
+
+
+
+fim:
+# Printa \n
+addi $a0, $zero, 10
+addi $v0, $zero, 11
+syscall
+
+# termina a interpretacao
+addi $v0, $zero, 10
+syscall
