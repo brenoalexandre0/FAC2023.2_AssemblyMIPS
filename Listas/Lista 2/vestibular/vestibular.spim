@@ -37,6 +37,7 @@ syscall
 xor $s3, $s3, $s3
 # N = N - 1 (para nao comparar o final de string)
 addi $s0, $s0, -1
+
 checaAcertos:
 # Checa condicao de iteracao do loop
 beq $s0, $zero, printa

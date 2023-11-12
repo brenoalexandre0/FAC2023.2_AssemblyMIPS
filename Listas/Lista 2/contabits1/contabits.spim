@@ -1,0 +1,24 @@
+contaBits:
+# $a0 -> $t0, inteiro recebido
+add $t0, $a0, $zero
+
+# Cont de 1s = 0
+xor $t1, $t1, $t1
+
+loop:
+beq $t0, $zero, fim
+
+andi $t2, $t0, 1
+beq $t2, $zero, pula
+# Incrementa o contador
+addi $t1, $t1, 1
+
+pula:
+srl $t0, $t0, 1
+
+j loop
+
+fim:
+add $v0, $t1, $zero
+
+jr $ra

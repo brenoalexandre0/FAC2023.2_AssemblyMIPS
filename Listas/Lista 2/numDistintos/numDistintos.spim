@@ -1,0 +1,48 @@
+# $t0 = endereco do vetor
+# $t1 = quant elementos do vetor
+# $t2 = Contador de elem distintos
+# $t3 = Contador do loop
+# $t5 = Numero anterior
+
+elemDistintos:
+# Carrega o endereco base em $t0
+add $t0, $a0, $zero
+# Carrega quant de elementos do vetor em $t1
+add $t1, $a1, $zero
+
+# Contador de elem distintos = 0
+xor $t2, $t2, $t2
+
+# Contador do loop = 0
+xor $t3, $t3, $t3
+
+loop:
+beq $t3, $t1, addV0
+
+# Carrega elemento da posicao n do vetor
+sll $t4, $t3, 2
+add $t4, $t0, $t4
+lw $t4, 0($t4)
+
+# Checa se eh a primeira iteracao para guardar o primeiro elemento
+bne $t3, $zero, outrasIteracoes
+add $t5, $t4, $zero
+addi $t2, $t2, 1
+
+outrasIteracoes:
+# Checa se o elem anterior e o atual sao diferentes, para iterar o contador de elem distintos
+# e alterar o anterior
+beq $t4, $t5, iguais
+addi $t2, $t2, 1
+add $t5, $t4, $zero
+
+iguais:
+addi $t3, $t3, 1
+j loop
+
+addV0:
+# Retorna a quant de elem distintos
+add $v0, $t2, $zero
+
+# Retorna a chamada da funcao
+jr $ra

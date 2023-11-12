@@ -1,57 +1,12 @@
-# $t0 endereco vetor
-# $t1 quant elementos do vetor
-# $t2 contador
-# $t3 num anterior
-# $t4 distintos
-
 .data
-vetor: .word 1, 1, 2, 2, 5, 5, 5, 5, 7, 8
-
 .text
 main:
-la $a0, vetor
-addi $a1, $zero, 10
-#############################################
-elemDistintos:
-add $t0, $a0, $zero
-add $t1, $a1, $zero
-
-# Contador = 0
-xor $t2, $t2, $t2
-
-# Anterior = 0
-xor $t3, $t3, $t3
-
-# Distintos = 0
-xor $t4, $t4, $t4
-
-comparaElem:
-beq $t2, $t1, addV0
-
-# Carrega posicao n do vetor
-sll $t5, $t2, 2
-add $t5, $t5, $t0
-lw $t5, 0($t5)
 
 
 
-incrementa:
-addi $t2, $t2, 4
-j comparaElem
-
-addV0:
-add $v0, $t4, $zero
-#############################################
-# Printa os elementos
-add $a0, $v0, $zero
-addi $v0, $zero, 1
-syscall
-
-# Printa \n
-addi $a0, $zero, 10
+addi $a0, $v0, 10
 addi $v0, $zero, 11
 syscall
 
-# Saida
 addi $v0, $zero, 10
 syscall
