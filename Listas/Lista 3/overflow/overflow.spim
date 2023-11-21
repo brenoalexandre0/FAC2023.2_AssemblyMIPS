@@ -1,0 +1,81 @@
+# $s0 = 0 se for soma sem sinal e 1 se for com sinal
+# $s1 = num1
+# $s2 = num2
+
+.data
+printOverflow: .asciiz "overflow"
+
+.text
+main:
+# Le 0 se for soma sem sinal e 1 se for com sinal
+addi $v0, $zero, 5
+syscall
+add $s0, $zero, $v0
+# Le num1
+addi $v0, $zero, 5
+syscall
+add $s1, $zero, $v0
+# Le num2
+addi $v0, $zero, 5
+syscall
+add $s2, $zero, $v0
+
+add $t0, $s1, $s2
+
+# Checa se $s0 eh 0 ou 1
+bne $s0, $zero, somaComSinal
+and $t1, $s1, $s2
+slt $t2, $zero, $t1
+beq $t2, $zero, transformaPositivo
+j checaOverflow1
+
+transformaPositivo:
+nor $t1, $s1, $zero
+addi $t1, $t1, 1
+nor $t2, $s2, $zero
+addi $t2, $t2, 1
+
+
+beq $t3, $zero, overflow
+j mostraValor
+
+somaComSinal:
+xor $t1, $s1, $s2
+slt $t2, $zero, $t1
+beq $t2, $zero, checaOverflow2
+j mostraValor
+
+checaOverflow2:
+and $t1, $s1, $s2
+slt $t2, $zero, $t1
+beq $t2, $zero, AeBnegativos
+slt $t1, $zero, $t0
+beq $t1, $zero, overflow
+j mostraValor
+
+AeBnegativos:
+slt $t1, $t0, $zero
+beq $t1, $zero, overflow
+j mostraValor
+
+overflow:
+addi $v0, $zero, 4
+la $a0, printOverflow
+syscall
+j encerra
+
+mostraValor:
+# Mostra o resultado
+addi $v0, $zero, 1
+add $a0, $zero, $t0
+syscall
+
+encerra:
+# Mostra \n
+addi $v0, $zero, 11
+addi $a0, $zero, 10
+syscall
+
+# Encerra a execucao
+addi $v0, $zero, 10
+syscall

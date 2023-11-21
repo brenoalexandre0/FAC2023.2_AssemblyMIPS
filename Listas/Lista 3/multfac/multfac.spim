@@ -1,53 +1,70 @@
-.data
+# Num1 + Num2 = P
+# P = hi + (lo = Num2)
+# $t0 = Num1
+# $t1 = Num2 = lo
+# $t2 = P
 
-.text
-main:
-# Le M
-addi $v0, $zero, 5
-add $s0, $v0, $zero
-syscall
+multfac:
+# Recebe multiplicando e multiplicador
+add $t0, $zero, $a0
+add $t1, $zero, $a1
+# hi = 0
+xor $t2, $t2, $t2
+# Contador = 0
+xor $t3, $t3, $t3
+# Arquitetura = 4
+addi $t4, $zero, 4
+# Contador de negativo = 0
+xor $t5, $t5, $t5
 
-# Le Q
-addi $v0, $zero, 5
-add $s1, $v0, $zero
-syscall
+# Checa se Num1 eh negativo
+slt $t6, $t0, $zero
+beq $t6, $zero, checaA
+nor $t0, $t0, $zero
+addi $t0, $t0, 1
+addi $t5, $t5, 1
+# Checa se Num2 eh negativo
+checaA:
+slt $t6, $t1, $zero
+beq $t6, $zero, loop
+nor $t1, $t1, $zero
+addi $t1, $t1, 1
+addi $t5, $t5, -1
 
-# Registrador pra guardar se o produto sera negativo = 0
-add $s2, $zero, $zero
+loop:
+beq $t3, $t4, checaNegativo
+# Checa se lo tem 1 no bit menos significativo
+andi $t6, $t1, 1
+# Se verdadeiro, soma o multiplicando em hi
+beq $t6, $zero, desloca
+add $t2, $t2, $t0
 
-#Checa se M é negativo
-slt $t0, $s0, $zero
-bne $t0, $zero, complementoA2_1
-j checaQ
+desloca:
+# Checa se hi tem 1 no bit menos significativo
+andi $t6, $t2, 1
 
-complementoA2_1:
-nor $s0, $s0, $zero
-addi $s0, $s0, 1
-# Negativo ++
-addi $s2, $s2, 1
+srl $t1, $t1, 1
+srl $t2, $t2, 1
 
-#Checa se Q é negativo
-checaQ:
-slt $t0, $s1, $zero
-bne $t0, $zero, complementoA2_2
-j multiplica
+# Se for verdadeiro, soma 1000 em lo
+beq $t6, $zero, incrementa
+li $t6, 8
+add $t1, $t1, $t6
 
-complementoA2_2:
-nor $s1, $s1, $zero
-addi $s1, $s1, 1
-# Negativo ++
-addi $s2, $s2, 1
+incrementa:
+addi $t3, $t3, 1
+j loop
 
-multiplica:
-
-
+checaNegativo:
+# Checa se o resultado sera negativo
+beq $t5, $zero, fim
+nor $t1, $t1, $zero
+addi $t1, $t1, 1
+nor $t2, $t2, $zero
+addi $t2, $t2, 1
 
 fim:
-# Printa \n
-addi $a0, $zero, 10
-addi $v0, $zero, 11
-syscall
+mtlo $t1
+mthi $t2
 
-# termina a interpretacao
-addi $v0, $zero, 10
-syscall
+jr $ra
