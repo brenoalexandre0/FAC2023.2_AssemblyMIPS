@@ -1,105 +1,70 @@
 .data
+mensagem: .asciiz "overflow"
+
 .text
 main:
-addi $a0, $zero, 2
-addi $a1, $zero, 4
+# Le a instrucao de soma
+addi $v0, $zero, 5
+syscall
+add $s0, $zero, $v0
+# Le num1
+addi $v0, $zero, 5
+syscall
+add $s1, $zero, $v0
+# Le num2
+addi $v0, $zero, 5
+syscall
+add $s2, $zero, $v0
 
-jal multfac
+bne $s0, $zero, comSinal
 
-mflo $s0
-mfhi $s1
+addu $t0, $s1, $s2
 
-# Printa lo
+xor $t1, $s1, $s2
+slt $t1, $t1, $zero
+bne $t1, $zero, printaResultado
+
+xor $t1, $t0, $s1
+slt $t1, $t1, $zero
+bne $t1, $zero, overflow
+
+li $t1, 2147483647
+slt $t1, $t0, $t1
+beq $t1, $zero, overflow
+
+li $t1, -2147483648
+slt $t1, $t1, $t0
+beq $t1, $zero, overflow
+j printaResultado
+
+comSinal:
+addu $t0, $s1, $s2
+
+xor $t1, $s1, $s2
+slt $t1, $t1, $zero
+bne $t1, $zero, printaResultado
+
+xor $t1, $t0, $s1
+slt $t1, $zero, $t1
+beq $t1, $zero, overflow
+
+printaResultado:
 addi $v0, $zero, 1
-add $a0, $zero, $s0
+add $a0, $zero, $t0
+syscall
+j encerra
+
+overflow:
+addi $v0, $zero, 4
+la $a0, mensagem
 syscall
 
-# \n
+encerra:
+# Printa \n
 addi $v0, $zero, 11
 addi $a0, $zero, 10
 syscall
 
-# Printa hi
-addi $v0, $zero, 1
-add $a0, $zero, $s1
-syscall
-
-# \n
-addi $v0, $zero, 11
-addi $a0, $zero, 10
-syscall
-
-# Encerra
+# Encerra a execucao
 addi $v0, $zero, 10
 syscall
-#########################################################################
-# Num1 + Num2 = P
-# P = hi + (lo = Num2)
-# $t0 = Num1
-# $t1 = Num2 = lo
-# $t2 = P
-
-multfac:
-# Recebe multiplicando e multiplicador
-add $t0, $zero, $a0
-add $t1, $zero, $a1
-# hi = 0
-xor $t2, $t2, $t2
-# Contador = 0
-xor $t3, $t3, $t3
-# Arquitetura = 4
-addi $t4, $zero, 32
-# Contador de negativo = 0
-xor $t5, $t5, $t5
-
-# Checa se Num1 eh negativo
-slt $t6, $t0, $zero
-beq $t6, $zero, checaA
-nor $t0, $t0, $zero
-addi $t0, $t0, 1
-addi $t5, $t5, 1
-# Checa se Num2 eh negativo
-checaA:
-slt $t6, $t1, $zero
-beq $t6, $zero, loop
-nor $t1, $t1, $zero
-addi $t1, $t1, 1
-addi $t5, $t5, -1
-
-loop:
-beq $t3, $t4, checaNegativo
-# Checa se lo tem 1 no bit menos significativo
-andi $t6, $t1, 1
-# Se verdadeiro, soma o multiplicando em hi
-beq $t6, $zero, desloca
-add $t2, $t2, $t0
-
-desloca:
-# Checa se hi tem 1 no bit menos significativo
-andi $t6, $t2, 1
-
-srl $t1, $t1, 1
-srl $t2, $t2, 1
-
-# Se for verdadeiro, soma 1000 em lo
-beq $t6, $zero, incrementa
-li $t6, 2147483648
-add $t1, $t1, $t6
-
-incrementa:
-addi $t3, $t3, 1
-j loop
-
-checaNegativo:
-# Checa se o resultado sera negativo
-beq $t5, $zero, fim
-nor $t1, $t1, $zero
-addi $t1, $t1, 1
-nor $t2, $t2, $zero
-addi $t2, $t2, 1
-
-fim:
-mtlo $t1
-mthi $t2
-
-jr $ra

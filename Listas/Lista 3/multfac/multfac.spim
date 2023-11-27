@@ -1,67 +1,65 @@
-# Num1 + Num2 = P
-# P = hi + (lo = Num2)
-# $t0 = Num1
-# $t1 = Num2 = lo
-# $t2 = P
+.data
+.text
+main:
+addi $a0, $zero, 3
+addi $a1, $zero, 9
 
+jal multfac
+
+mflo $s0
+mfhi $s1
+
+addi $v0, $zero, 1
+add $a0, $zero, $s0
+syscall
+
+addi $v0, $zero, 11
+addi $a0, $zero, 10
+syscall
+
+addi $v0, $zero, 1
+add $a0, $zero, $s1
+syscall
+
+addi $v0, $zero, 11
+addi $a0, $zero, 10
+syscall
+
+addi $v0, $zero, 10
+syscall
+#############################################################################
 multfac:
-# Recebe multiplicando e multiplicador
 add $t0, $zero, $a0
 add $t1, $zero, $a1
 # hi = 0
 xor $t2, $t2, $t2
 # Contador = 0
 xor $t3, $t3, $t3
-# Arquitetura = 4
-addi $t4, $zero, 4
-# Contador de negativo = 0
-xor $t5, $t5, $t5
 
-# Checa se Num1 eh negativo
-slt $t6, $t0, $zero
-beq $t6, $zero, checaA
-nor $t0, $t0, $zero
-addi $t0, $t0, 1
-addi $t5, $t5, 1
-# Checa se Num2 eh negativo
-checaA:
-slt $t6, $t1, $zero
-beq $t6, $zero, loop
-nor $t1, $t1, $zero
-addi $t1, $t1, 1
-addi $t5, $t5, -1
-
+# Verifica se o contador eh menor que 32 para continuar o loop
 loop:
-beq $t3, $t4, checaNegativo
-# Checa se lo tem 1 no bit menos significativo
-andi $t6, $t1, 1
-# Se verdadeiro, soma o multiplicando em hi
-beq $t6, $zero, desloca
+slti $t4, $t3, 32
+beq $t4, $zero, fim
+
+# Verifica se tem 1 no bit menos signficativo em lo, para somar num1 em hi
+andi $t4, $t1, 1
+beq $t4, $zero, desloca
 add $t2, $t2, $t0
 
 desloca:
-# Checa se hi tem 1 no bit menos significativo
-andi $t6, $t2, 1
-
+# Verifica se tem 1 no bit menos signficativo em hi, para passar para o lo
+andi $t4, $t2, 1
+# Desloca a direita hi e lo
 srl $t1, $t1, 1
 srl $t2, $t2, 1
-
-# Se for verdadeiro, soma 1000 em lo
-beq $t6, $zero, incrementa
-li $t6, 8
-add $t1, $t1, $t6
+# Verifica se tem 1 no bit menos signficativo em hi, para passar para o lo
+beq $t4, $zero, incrementa
+li $t4, 2147483648
+add $t1, $t1, $t4
 
 incrementa:
 addi $t3, $t3, 1
 j loop
-
-checaNegativo:
-# Checa se o resultado sera negativo
-beq $t5, $zero, fim
-nor $t1, $t1, $zero
-addi $t1, $t1, 1
-nor $t2, $t2, $zero
-addi $t2, $t2, 1
 
 fim:
 mtlo $t1
