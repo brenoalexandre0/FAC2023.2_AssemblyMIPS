@@ -1,70 +1,22 @@
 .data
-mensagem: .asciiz "overflow"
+    double_num: .double 3.14  # Seu número double aqui
+    print_str: .asciiz "O número double é: "
 
 .text
 main:
-# Le a instrucao de soma
-addi $v0, $zero, 5
-syscall
-add $s0, $zero, $v0
-# Le num1
-addi $v0, $zero, 5
-syscall
-add $s1, $zero, $v0
-# Le num2
-addi $v0, $zero, 5
-syscall
-add $s2, $zero, $v0
+    # Imprimir a string
+    la $a0, print_str
+    li $v0, 4
+    syscall
 
-bne $s0, $zero, comSinal
+    l.d $f10, double_num
 
-addu $t0, $s1, $s2
+    # Carregar e imprimir o número double
+    mov.d $f12, $f10
+    li $v0, 3
+    syscall
 
-xor $t1, $s1, $s2
-slt $t1, $t1, $zero
-bne $t1, $zero, printaResultado
-
-xor $t1, $t0, $s1
-slt $t1, $t1, $zero
-bne $t1, $zero, overflow
-
-li $t1, 2147483647
-slt $t1, $t0, $t1
-beq $t1, $zero, overflow
-
-li $t1, -2147483648
-slt $t1, $t1, $t0
-beq $t1, $zero, overflow
-j printaResultado
-
-comSinal:
-addu $t0, $s1, $s2
-
-xor $t1, $s1, $s2
-slt $t1, $t1, $zero
-bne $t1, $zero, printaResultado
-
-xor $t1, $t0, $s1
-slt $t1, $zero, $t1
-beq $t1, $zero, overflow
-
-printaResultado:
-addi $v0, $zero, 1
-add $a0, $zero, $t0
-syscall
-j encerra
-
-overflow:
-addi $v0, $zero, 4
-la $a0, mensagem
-syscall
-
-encerra:
-# Printa \n
-addi $v0, $zero, 11
-addi $a0, $zero, 10
-syscall
-
-# Encerra a execucao
-addi $v0, $zero, 10
-syscall
+    fim:
+    # Encerra o programa
+    li $v0, 10      # syscall 10 para sair
+    syscall

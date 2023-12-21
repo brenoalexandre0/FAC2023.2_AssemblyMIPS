@@ -3,52 +3,42 @@ mensagem: .asciiz "overflow"
 
 .text
 main:
-# Le a instrucao de soma
+# Le qual tipo de soma
 addi $v0, $zero, 5
 syscall
 add $s0, $zero, $v0
-# Le num1
+# Le operando 1
 addi $v0, $zero, 5
 syscall
 add $s1, $zero, $v0
-# Le num2
+# Le operando 2
 addi $v0, $zero, 5
 syscall
 add $s2, $zero, $v0
 
-bne $s0, $zero, comSinal
+# Verifica qual sera o tipo de soma ou encerra
+addi $t0, $zero, 1
+beq $s0, $zero, semSinal
+beq $s0, $t0, comSinal
+j encerra
 
+semSinal:
 addu $t0, $s1, $s2
+nor $t1, $s1, $zero
+sltu $t1, $t1, $s2
+bne $t1, $zero, overflow
+j printaSoma
 
+comSinal:
+addu $t0, $s1, $s2
 xor $t1, $s1, $s2
 slt $t1, $t1, $zero
-bne $t1, $zero, printaResultado
-
+bne $t1, $zero, printaSoma
 xor $t1, $t0, $s1
 slt $t1, $t1, $zero
 bne $t1, $zero, overflow
 
-li $t1, 2147483647
-slt $t1, $t0, $t1
-beq $t1, $zero, overflow
-
-li $t1, -2147483648
-slt $t1, $t1, $t0
-beq $t1, $zero, overflow
-j printaResultado
-
-comSinal:
-addu $t0, $s1, $s2
-
-xor $t1, $s1, $s2
-slt $t1, $t1, $zero
-bne $t1, $zero, printaResultado
-
-xor $t1, $t0, $s1
-slt $t1, $zero, $t1
-beq $t1, $zero, overflow
-
-printaResultado:
+printaSoma:
 addi $v0, $zero, 1
 add $a0, $zero, $t0
 syscall
@@ -60,11 +50,6 @@ la $a0, mensagem
 syscall
 
 encerra:
-# Printa \n
-addi $v0, $zero, 11
-addi $a0, $zero, 10
-syscall
-
 # Encerra a execucao
 addi $v0, $zero, 10
 syscall
